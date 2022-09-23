@@ -56,7 +56,13 @@ function Main() {
 function Order() {
     return (
         <OrderStack.Navigator screenOptions={screenOptions}>
-            <OrderStack.Screen name="orderScreen" component={OrderScreen} />
+            <OrderStack.Screen
+                name="orderScreen"
+                component={OrderScreen}
+                options={{
+                    animation: "slide_from_bottom",
+                }}
+            />
         </OrderStack.Navigator>
     );
 }

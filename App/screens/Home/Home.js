@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         position: "relative",
     },
-    categoryItemWrapper: { padding: 10, paddingTop: 10, paddingBottom: 40, paddingRight: 10 },
+    categoryItemWrapper: { padding: 10, paddingTop: 10, paddingBottom: 22, paddingRight: 10 },
     categoryItem: {
         width: CATEGORY_ITEM_WIDTH,
         height: CATEGORY_ITEM_HEIGHT,

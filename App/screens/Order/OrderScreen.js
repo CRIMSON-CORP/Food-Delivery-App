@@ -1,7 +1,6 @@
 import { ScrollView, View, StyleSheet } from "react-native";
 import PropTypes from "prop-types";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation } from "../../../context/navigationContext";
 import theme from "../../../utils/theme";
 import { TopBar } from "../../components";
 import { LeftArrow, List } from "../../components/Icons";
@@ -11,7 +10,6 @@ import data from "../../../utils/data";
 function OrderScreen({ route }) {
     const selectedRestaurantId = route.params.id;
     const { name } = data.restaurant.find((restaurant) => restaurant.id === selectedRestaurantId);
-    // const navigation = useNavigation();
     return (
         <View style={styles.container}>
             <SafeAreaView style={styles.container}>
