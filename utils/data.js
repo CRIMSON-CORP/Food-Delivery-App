@@ -50,4 +50,60 @@ export default {
             icon: require("../assets/images/catgories/cup-with-straw.png"),
         },
     ],
+    restaurant: [
+        {
+            id: 1,
+            image: "",
+            name: "Burger Story",
+            minTime: 20,
+            maxTime: 30,
+            rating: 4.7,
+            tags: [
+                {
+                    slug: "burgers",
+                    label: "Burgers",
+                },
+                {
+                    slug: "snacks",
+                    label: "Snacks",
+                },
+            ],
+        },
+        {
+            id: 2,
+            image: "",
+            name: "Hollywood Café",
+            minTime: 15,
+            maxTime: 25,
+            rating: 4.5,
+            tags: [
+                {
+                    slug: "donuts",
+                    label: "Donuts",
+                },
+                {
+                    slug: "drinks",
+                    label: "Drinks",
+                },
+            ],
+        },
+        {
+            id: 3,
+            image: "",
+            name: "The Salad Life",
+            minTime: 25,
+            maxTime: 45,
+            rating: 3.7,
+            tags: [
+                {
+                    slug: "pizza",
+                    label: "Pizza",
+                },
+                {
+                    slug: "salads",
+                    label: "Salads",
+                },
+            ],
+        },
+    ],
 };

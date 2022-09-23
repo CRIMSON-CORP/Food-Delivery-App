@@ -149,6 +149,10 @@ function Indicator({ selectedCategory }) {
     );
 }
 
+function Resturant() {
+    return <View></View>;
+}
+
 Indicator.propTypes = {
     selectedCategory: PropTypes.string,
 };
