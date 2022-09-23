@@ -14,6 +14,7 @@ import { useCallback, useEffect, useState } from "react";
 import theme from "../../../utils/theme";
 import { useNavigation } from "../../../context/navigationContext";
 import { Center } from "../ui";
+import { LinearGradient } from "expo-linear-gradient";
 
 const CURVED_BACKGROUND_HEIGHT = 70;
 
@@ -21,7 +22,7 @@ const BALL_DIMENSIONS = 52;
 const BALL_STARTING_POINT = 26;
 
 const ICON_SIZE = 24;
-const ICON_ACTIVE_COLOR = theme.colors.black;
+const ICON_ACTIVE_COLOR = theme.colors.primary;
 const ICON_INACTIVE_COLOR = theme.colors[200];
 
 const HORIZONTAL_TRANSLATE_DURATION = 800;
@@ -61,7 +62,12 @@ export default function BottomNavigation() {
 }
 
 function BottomNavigationUnderlay() {
-    return <View style={styles.underlayContainer} />;
+    return (
+        <LinearGradient
+            colors={["#00000000", "#00000015", "#00000040"]}
+            style={styles.underlayContainer}
+        />
+    );
 }
 
 function BottomNavigationBackground() {
@@ -320,15 +326,7 @@ const styles = StyleSheet.create({
         bottom: -5,
         left: -280,
     },
-    underlayContainer: {
-        height: 110,
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-        width: "100%",
-        backgroundColor: theme.colors.primary,
-        position: "absolute",
-        bottom: 0,
-    },
+    underlayContainer: { height: 100, position: "absolute", bottom: 0, width: "100%" },
     tabsContainer: {
         flexDirection: "row",
         paddingHorizontal: 40,

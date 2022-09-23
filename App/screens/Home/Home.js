@@ -8,11 +8,13 @@ import Cart from "../../components/Icons/Cart";
 import { Center, Text } from "../../components/ui";
 import { Shadow } from "react-native-shadow-2";
 import theme from "../../../utils/theme";
+import { useState } from "react";
 
 const CATEGORY_ITEM_WIDTH = 60;
 const CATEGORY_ITEM_HEIGHT = 90;
 
 function Home() {
+    const [selectedCategory, setSelectedCategory] = useState("hot-dogs");
     return (
         <View style={styles.container}>
             <SafeAreaView style={styles.container}>
@@ -37,7 +39,7 @@ function Home() {
                         showsHorizontalScrollIndicator={false}
                         snapToInterval={CATEGORY_ITEM_WIDTH + 20}
                         style={styles.categoryFlatList}
-                        renderItem={({ item }) => <CategoryItem {...item} />}
+                        renderItem={({ item, index }) => <CategoryItem {...item} index={index} />}
                     />
                 </View>
             </SafeAreaView>
@@ -47,7 +49,7 @@ function Home() {
 
 export default Home;
 
-function CategoryItem({ slug, icon, label }) {
+function CategoryItem({ slug, icon, label, index }) {
     return (
         <View style={styles.categoryItemWrapper}>
             <Shadow distance={15} startColor="#F0F0F0" endColor="#FFFFFF00" offset={[0, 8]}>
@@ -64,10 +66,31 @@ function CategoryItem({ slug, icon, label }) {
     );
 }
 
+function Indicator() {
+    return (
+        <View
+            style={{
+                width: CATEGORY_ITEM_WIDTH + 3,
+                height: CATEGORY_ITEM_HEIGHT + 3,
+                borderWidth: 3,
+                borderColor: theme.colors.primary,
+                borderRadius: 9999,
+                alignItems: "center",
+                position: "absolute",
+                top: 10,
+                left: 8,
+                zIndex: 20,
+                // transform: [{ translateX: 50 }],
+            }}
+        />
+    );
+}
+
 CategoryItem.propTypes = {
     slug: PropTypes.string,
     icon: PropTypes.number,
     label: PropTypes.string,
+    index: PropTypes.number,
 };
 
 const styles = StyleSheet.create({
@@ -92,6 +115,7 @@ const styles = StyleSheet.create({
     categoryFlatList: {
         overflow: "visible",
         marginLeft: -10,
+        position: "relative",
     },
     categoryItemWrapper: { padding: 10, paddingTop: 10, paddingBottom: 40, paddingRight: 10 },
     categoryItem: {
@@ -101,6 +125,7 @@ const styles = StyleSheet.create({
         borderRadius: 9999,
         alignItems: "center",
         padding: 5,
+        position: "relative",
     },
     iconWrapper: {
         backgroundColor: theme.colors[100],
