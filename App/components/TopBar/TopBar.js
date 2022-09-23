@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
+        paddingHorizontal: 20,
     },
     capsle: {
         backgroundColor: theme.colors[100],

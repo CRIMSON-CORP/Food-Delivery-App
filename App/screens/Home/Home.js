@@ -3,8 +3,7 @@ import PropTypes from "prop-types";
 import { SafeAreaView } from "react-native-safe-area-context";
 import data from "../../../utils/data";
 import { TopBar } from "../../components";
-import { Location } from "../../components/Icons";
-import Cart from "../../components/Icons/Cart";
+import { Location, Cart, Star } from "../../components/Icons";
 import { Text } from "../../components/ui";
 import { Shadow } from "react-native-shadow-2";
 import theme from "../../../utils/theme";
@@ -23,6 +22,8 @@ import Animated, {
 const CATEGORY_ITEM_WIDTH = 60;
 const CATEGORY_ITEM_HEIGHT = 90;
 
+const RESTAURANT_CARD_HEIGHT = 200;
+
 function Home() {
     const [selectedCategory, setSelectedCategory] = useState("hot-dogs");
     return (
@@ -31,7 +32,7 @@ function Home() {
                 <TopBar leftIcon={<Location />} rightIcon={<Cart />}>
                     {data.location}
                 </TopBar>
-                <View>
+                <View style={styles.SafeAreaView}>
                     <View style={styles.mainHeader}>
                         <Text styles={styles.mainHeaderText} size={32} weight={500}>
                             Main
@@ -40,23 +41,35 @@ function Home() {
                             Categories
                         </Text>
                     </View>
+                    <View>
+                        <ScrollView
+                            horizontal
+                            pagingEnabled
+                            style={styles.categoryScrollView}
+                            showsHorizontalScrollIndicator={false}
+                            snapToInterval={CATEGORY_ITEM_WIDTH + 20}
+                        >
+                            {data.categories.map((item, index) => (
+                                <CategoryItem
+                                    key={item.id}
+                                    {...item}
+                                    index={index}
+                                    selectedCategory={selectedCategory}
+                                    setSelectedCategory={setSelectedCategory}
+                                />
+                            ))}
+                            <Indicator selectedCategory={selectedCategory} />
+                        </ScrollView>
+                    </View>
                     <ScrollView
-                        horizontal
-                        pagingEnabled
-                        style={styles.categoryScrollView}
-                        showsHorizontalScrollIndicator={false}
-                        snapToInterval={CATEGORY_ITEM_WIDTH + 20}
+                        style={styles.restaurantScrollView}
+                        showsVerticalScrollIndicator={false}
                     >
-                        {data.categories.map((item, index) => (
-                            <CategoryItem
-                                key={item.id}
-                                {...item}
-                                index={index}
-                                selectedCategory={selectedCategory}
-                                setSelectedCategory={setSelectedCategory}
-                            />
-                        ))}
-                        <Indicator selectedCategory={selectedCategory} />
+                        <View style={{ marginBottom: 50, padding: 20 }}>
+                            {data.restaurant.map((item, index) => (
+                                <Resturant {...item} key={index} />
+                            ))}
+                        </View>
                     </ScrollView>
                 </View>
             </SafeAreaView>
@@ -149,10 +162,6 @@ function Indicator({ selectedCategory }) {
     );
 }
 
-function Resturant() {
-    return <View></View>;
-}
-
 Indicator.propTypes = {
     selectedCategory: PropTypes.string,
 };
@@ -166,10 +175,60 @@ CategoryItem.propTypes = {
     setSelectedCategory: PropTypes.func,
 };
 
+function Resturant({ image, name, minTime, maxTime, rating, tags }) {
+    return (
+        <View style={styles.restaurantCard}>
+            <Shadow
+                distance={25}
+                startColor="#dddddd"
+                endColor="#FFFFFF00"
+                offset={[0, 8]}
+                style={styles.restaurantCardShadow}
+            >
+                <View style={styles.restaurantCardImageWrapper}>
+                    <Image source={image} style={styles.restaurantCardImage} resizeMode="cover" />
+                    <View style={styles.time}>
+                        <Text weight={500}>{`${minTime}-${maxTime}min`}</Text>
+                    </View>
+                </View>
+            </Shadow>
+            <View style={styles.restaurantCardContent}>
+                <Text size={28}>{name}</Text>
+                <View style={styles.restaurantCardContentDetail}>
+                    <Star size={16} color={theme.colors.primary} />
+                    <Text styles={styles.restaurantRating}>{rating}</Text>
+                    {tags.map(({ label }, index) => (
+                        <View key={index} style={styles.tag}>
+                            <Text styles={styles.tagText}>{label}</Text>
+                            <View style={styles.tagSeparator} />
+                        </View>
+                    ))}
+                    <Text>$</Text>
+                    <Text styles={styles.dollarFaded}>$$</Text>
+                </View>
+            </View>
+        </View>
+    );
+}
+
+Resturant.propTypes = {
+    id: PropTypes.number,
+    image: PropTypes.number,
+    name: PropTypes.string,
+    minTime: PropTypes.number,
+    maxTime: PropTypes.number,
+    rating: PropTypes.number,
+    tags: PropTypes.arrayOf(
+        PropTypes.shape({
+            slug: PropTypes.string,
+            label: PropTypes.string,
+        })
+    ),
+};
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingHorizontal: 10,
         backgroundColor: "#FFFFFF",
     },
     SafeAreaView: {
@@ -178,13 +237,14 @@ const styles = StyleSheet.create({
     mainHeader: {
         marginVertical: 30,
         marginBottom: 10,
+        paddingHorizontal: 20,
     },
     mainHeaderText: {
         lineHeight: 36,
     },
     categoryScrollView: {
         overflow: "visible",
-        marginLeft: -10,
+        marginLeft: 10,
         position: "relative",
     },
     categoryItemWrapper: { padding: 10, paddingTop: 10, paddingBottom: 40, paddingRight: 10 },
@@ -225,5 +285,63 @@ const styles = StyleSheet.create({
         top: 7.7,
         left: 7.7,
         zIndex: 20,
+    },
+    restaurantScrollView: {
+        flex: 1,
+    },
+    restaurantCardWrapper: {},
+    restaurantCard: {
+        marginBottom: 20,
+        width: "100%",
+    },
+    restaurantCardShadow: {
+        width: "100%",
+    },
+    restaurantCardImageWrapper: {
+        width: "100%",
+        borderRadius: 30,
+        overflow: "hidden",
+        position: "relative",
+    },
+    restaurantCardImage: {
+        height: RESTAURANT_CARD_HEIGHT,
+        width: "100%",
+    },
+    time: {
+        backgroundColor: "#FFFFFF",
+        paddingHorizontal: 16,
+        paddingVertical: 12,
+        position: "absolute",
+        bottom: 0,
+        left: 0,
+        borderTopRightRadius: 30,
+    },
+    restaurantCardContent: {
+        marginTop: 16,
+    },
+    restaurantCardContentDetail: {
+        flexDirection: "row",
+        // alignItems: "center",
+    },
+    restaurantRating: {
+        marginLeft: 8,
+        marginRight: 10,
+    },
+    tag: {
+        marginRight: 5,
+        flexDirection: "row",
+        alignItems: "center",
+    },
+    tagText: {
+        marginRight: 5,
+    },
+    tagSeparator: {
+        width: 4,
+        height: 4,
+        borderRadius: 99,
+        backgroundColor: theme.colors[200],
+    },
+    dollarFaded: {
+        color: theme.colors[200],
     },
 });

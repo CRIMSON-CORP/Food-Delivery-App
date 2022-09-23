@@ -24,7 +24,7 @@ Text.defaultProps = {
 Text.propTypes = {
     size: PropTypes.number,
     weight: PropTypes.number,
-    children: PropTypes.string,
+    children: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     styles: PropTypes.object,
 };
 

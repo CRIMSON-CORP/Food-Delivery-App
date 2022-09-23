@@ -53,7 +53,7 @@ export default {
     restaurant: [
         {
             id: 1,
-            image: "",
+            image: require("../assets/images/restaurants/restaurant1.jpg"),
             name: "Burger Story",
             minTime: 20,
             maxTime: 30,
@@ -71,7 +71,7 @@ export default {
         },
         {
             id: 2,
-            image: "",
+            image: require("../assets/images/restaurants/restaurant2.jpg"),
             name: "Hollywood Café",
             minTime: 15,
             maxTime: 25,
@@ -89,7 +89,7 @@ export default {
         },
         {
             id: 3,
-            image: "",
+            image: require("../assets/images/restaurants/restaurant3.jpg"),
             name: "The Salad Life",
             minTime: 25,
             maxTime: 45,
