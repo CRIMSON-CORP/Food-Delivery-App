@@ -6,7 +6,6 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import NavigationProvider from "./context/navigationContext";
 import { BottomNavigation, LoadingScreen } from "./App/components";
 import fonts from "./assets/fonts";
-import ThemeProvider from "./context/themeContext";
 import Home from "./App/screens/Home";
 import Search from "./App/screens/Search";
 import Saved from "./App/screens/Saved";
@@ -24,6 +23,7 @@ export default function App() {
     if (fontsLoaded)
         return (
             <GestureHandlerRootView style={styles.gestureRootView}>
+                <StatusBar style="dark" translucent />
                 <NavigationProvider>
                     <Stack.Navigator screenOptions={screenOptions}>
                         <Stack.Screen name="home" component={Home} />

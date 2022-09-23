@@ -1,8 +1,8 @@
-import { View, StyleSheet, Image, Pressable } from "react-native";
+import { View, StyleSheet, Image } from "react-native";
 import PropTypes from "prop-types";
 import { SafeAreaView } from "react-native-safe-area-context";
 import data from "../../../utils/data";
-import { TopBar } from "../../components";
+import { AnimatedPressable, TopBar } from "../../components";
 import { Location, Cart, Star } from "../../components/Icons";
 import { Text } from "../../components/ui";
 import { Shadow } from "react-native-shadow-2";
@@ -17,6 +17,10 @@ import Animated, {
     withDelay,
     withSpring,
     withTiming,
+    Layout,
+    ZoomOut,
+    ZoomIn,
+    FadeInDown,
 } from "react-native-reanimated";
 
 const CATEGORY_ITEM_WIDTH = 60;
@@ -26,6 +30,17 @@ const RESTAURANT_CARD_HEIGHT = 200;
 
 function Home() {
     const [selectedCategory, setSelectedCategory] = useState("hot-dogs");
+    const [restaurants, setRestaurants] = useState(data.restaurant);
+
+    useEffect(() => {
+        if (selectedCategory) {
+            const filter = data.restaurant.filter((restaurant) =>
+                restaurant.tags.find((tag) => tag.slug === selectedCategory)
+            );
+            setRestaurants(filter);
+        }
+    }, [selectedCategory]);
+
     return (
         <View style={styles.container}>
             <SafeAreaView style={styles.container}>
@@ -65,10 +80,25 @@ function Home() {
                         style={styles.restaurantScrollView}
                         showsVerticalScrollIndicator={false}
                     >
-                        <View style={{ marginBottom: 50, padding: 20 }}>
-                            {data.restaurant.map((item, index) => (
-                                <Resturant {...item} key={index} />
+                        <View
+                            style={{
+                                marginBottom: 50,
+                                padding: 20,
+                            }}
+                        >
+                            {restaurants.map((item) => (
+                                <Resturant key={item.id} {...item} />
                             ))}
+                            {restaurants.length === 0 && (
+                                <Animated.View
+                                    entering={FadeInDown.springify()}
+                                    style={styles.emptyRestaurantView}
+                                >
+                                    <Text styles={{ opacity: 0.5 }}>
+                                        No Restaurants matched this category
+                                    </Text>
+                                </Animated.View>
+                            )}
                         </View>
                     </ScrollView>
                 </View>
@@ -112,7 +142,7 @@ function CategoryItem({ slug, icon, label, index, selectedCategory, setSelectedC
                 .duration(600)
                 .springify()}
         >
-            <Pressable onPress={() => setSelectedCategory(slug)}>
+            <AnimatedPressable onPress={() => setSelectedCategory(slug)}>
                 <View style={styles.categoryItemWrapper}>
                     <Shadow distance={15} startColor="#F0F0F0" endColor="#FFFFFF00" offset={[0, 8]}>
                         <Animated.View
@@ -129,7 +159,7 @@ function CategoryItem({ slug, icon, label, index, selectedCategory, setSelectedC
                         </Animated.View>
                     </Shadow>
                 </View>
-            </Pressable>
+            </AnimatedPressable>
         </Animated.View>
     );
 }
@@ -177,21 +207,32 @@ CategoryItem.propTypes = {
 
 function Resturant({ image, name, minTime, maxTime, rating, tags }) {
     return (
-        <View style={styles.restaurantCard}>
-            <Shadow
-                distance={25}
-                startColor="#dddddd"
-                endColor="#FFFFFF00"
-                offset={[0, 8]}
-                style={styles.restaurantCardShadow}
-            >
-                <View style={styles.restaurantCardImageWrapper}>
-                    <Image source={image} style={styles.restaurantCardImage} resizeMode="cover" />
-                    <View style={styles.time}>
-                        <Text weight={500}>{`${minTime}-${maxTime}min`}</Text>
+        <Animated.View
+            layout={Layout.springify()}
+            entering={ZoomIn.duration(600)}
+            exiting={ZoomOut}
+            style={styles.restaurantCard}
+        >
+            <AnimatedPressable>
+                <Shadow
+                    distance={25}
+                    startColor="#dddddd"
+                    endColor="#FFFFFF00"
+                    offset={[0, 8]}
+                    style={styles.restaurantCardShadow}
+                >
+                    <View style={styles.restaurantCardImageWrapper}>
+                        <Image
+                            source={image}
+                            style={styles.restaurantCardImage}
+                            resizeMode="cover"
+                        />
+                        <View style={styles.time}>
+                            <Text weight={500}>{`${minTime}-${maxTime}min`}</Text>
+                        </View>
                     </View>
-                </View>
-            </Shadow>
+                </Shadow>
+            </AnimatedPressable>
             <View style={styles.restaurantCardContent}>
                 <Text size={28}>{name}</Text>
                 <View style={styles.restaurantCardContentDetail}>
@@ -207,7 +248,7 @@ function Resturant({ image, name, minTime, maxTime, rating, tags }) {
                     <Text styles={styles.dollarFaded}>$$</Text>
                 </View>
             </View>
-        </View>
+        </Animated.View>
     );
 }
 
@@ -343,5 +384,10 @@ const styles = StyleSheet.create({
     },
     dollarFaded: {
         color: theme.colors[200],
+    },
+    emptyRestaurantView: {
+        justifyContent: "center",
+        flexDirection: "row",
+        marginTop: 100,
     },
 });

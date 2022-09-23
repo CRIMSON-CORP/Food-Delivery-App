@@ -1,5 +1,5 @@
 export default {
-    location: "745, Lincoln PI",
+    location: "745 Lincoln PI",
     categories: [
         {
             id: 1,
@@ -33,13 +33,13 @@ export default {
         },
         {
             id: 6,
-            slug: "suchi",
+            slug: "sushi",
             label: "Sushi",
             icon: require("../assets/images/catgories/sushi.png"),
         },
         {
             id: 7,
-            slug: "donut",
+            slug: "donuts",
             label: "Donuts",
             icon: require("../assets/images/catgories/doughnut.png"),
         },
@@ -64,8 +64,12 @@ export default {
                     label: "Burgers",
                 },
                 {
-                    slug: "snacks",
-                    label: "Snacks",
+                    slug: "salads",
+                    label: "Salads",
+                },
+                {
+                    slug: "hot-dogs",
+                    label: "Hot Dogs",
                 },
             ],
         },
@@ -78,12 +82,16 @@ export default {
             rating: 4.5,
             tags: [
                 {
-                    slug: "donuts",
-                    label: "Donuts",
+                    slug: "burgers",
+                    label: "Burgers",
                 },
                 {
                     slug: "drinks",
                     label: "Drinks",
+                },
+                {
+                    slug: "hot-dogs",
+                    label: "Hot-Dogs",
                 },
             ],
         },
@@ -102,6 +110,10 @@ export default {
                 {
                     slug: "salads",
                     label: "Salads",
+                },
+                {
+                    slug: "sushi",
+                    label: "Sushi",
                 },
             ],
         },
