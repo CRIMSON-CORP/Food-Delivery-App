@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { StyleSheet, Text, View, Pressable } from "react-native";
+import { StyleSheet, View, Pressable } from "react-native";
 import { Svg, Path } from "react-native-svg";
 import Animated, {
     useSharedValue,
@@ -53,7 +53,6 @@ export default function BottomNavigation() {
     return (
         <View style={styles.container}>
             <BottomNavigationUnderlay />
-            <Text>BottomNavigation</Text>
             <BottomNavigationBackground />
             <IndicatorBall />
             <BottomNavigationTabs />
@@ -155,7 +154,7 @@ function Cutlery({ active, color, visible }) {
                 strokeWidth={9}
                 strokeLinecap="round"
                 strokeMiterlimit={10}
-                style={pathAnimatedStyles}
+                style={[styles.indicatorPath, pathAnimatedStyles]}
                 strokeDasharray={PATH_LENGTH}
                 animatedProps={pathAnimatedProps}
                 d="M2,4V36.18a5.4,5.4,0,0,0,5.4,5.4h4.7a4.69,4.69,0,0,1,4.7,4.7v62.88M32.08,28.62H2m24.32,13h0a5.76,5.76,0,0,0,5.76-5.76V3.9M16.8,4V28.62M72.6,56.53V3.9L59.93,13a11.07,11.07,0,0,0-4.61,9V60.32a8.62,8.62,0,0,0,8.62,8.62h2.7a6,6,0,0,1,6,6v34.26"
@@ -172,7 +171,7 @@ function Search({ active, color, visible }) {
             <AnimatedPath
                 strokeWidth={2}
                 stroke={color}
-                style={pathAnimatedStyles}
+                style={[styles.indicatorPath, pathAnimatedStyles]}
                 strokeDasharray={PATH_LENGTH}
                 animatedProps={pathAnimatedProps}
                 d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
@@ -191,7 +190,7 @@ function Heart({ active, color, visible }) {
                 strokeWidth={2}
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                style={pathAnimatedStyles}
+                style={[styles.indicatorPath, pathAnimatedStyles]}
                 strokeDasharray={PATH_LENGTH}
                 animatedProps={pathAnimatedProps}
                 d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
@@ -208,7 +207,7 @@ function User({ active, color, visible }) {
             <AnimatedPath
                 stroke={color}
                 strokeWidth={2}
-                style={pathAnimatedStyles}
+                style={[styles.indicatorPath, pathAnimatedStyles]}
                 strokeDasharray={PATH_LENGTH}
                 animatedProps={pathAnimatedProps}
                 d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
@@ -231,7 +230,7 @@ User.propTypes = ICONS_PROPTYPES;
 
 function IndicatorBall() {
     const navigationRef = useNavigation();
-    const [currentRouteName, setCurrentRouteName] = useState("");
+    const [currentRouteName, setCurrentRouteName] = useState("home");
 
     const translateX = useSharedValue(0);
     const translateYInner = useSharedValue(0);
@@ -263,6 +262,13 @@ function IndicatorBall() {
     const isSaved = currentRouteName === "saved";
     const isProfile = currentRouteName === "profile";
 
+    console.log({
+        isHome,
+        isSearch,
+        isSaved,
+        isProfile,
+    });
+
     return (
         <AnimatedView style={[styles.indicatorBallOuter, animatedOuterViewStyles]}>
             <AnimatedView style={[styles.indicatorBall, animatedInnerViewStyles]}>
@@ -284,10 +290,16 @@ function IndicatorBall() {
 }
 
 function useAnimatedPath(pathLength, active, visible) {
-    const opacity = useSharedValue(0);
+    const opacity = useSharedValue(1);
+
     const strokeDashOffset = useSharedValue(0);
+
     useEffect(() => {
-        opacity.value = withTiming(visible ? 1 : 0, { duration: 200 });
+        if (visible) {
+            opacity.value = withTiming(1, { duration: 300 });
+        } else {
+            opacity.value = withTiming(0, { duration: 300 });
+        }
     }, [visible]);
 
     useEffect(() => {
@@ -352,5 +364,8 @@ const styles = StyleSheet.create({
         position: "absolute",
         width: "100%",
         height: "100%",
+    },
+    indicatorPath: {
+        opacity: 1,
     },
 });
