@@ -284,7 +284,7 @@ function IndicatorBall() {
 }
 
 function useAnimatedPath(pathLength, active, visible) {
-    const opacity = useSharedValue(1);
+    const opacity = useSharedValue(0);
     const strokeDashOffset = useSharedValue(0);
     useEffect(() => {
         opacity.value = withTiming(visible ? 1 : 0, { duration: 200 });

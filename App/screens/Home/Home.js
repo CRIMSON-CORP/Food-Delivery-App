@@ -22,6 +22,7 @@ import Animated, {
     ZoomIn,
     FadeInDown,
 } from "react-native-reanimated";
+import { useNavigation } from "../../../context/navigationContext";
 
 const CATEGORY_ITEM_WIDTH = 60;
 const CATEGORY_ITEM_HEIGHT = 90;
@@ -205,7 +206,8 @@ CategoryItem.propTypes = {
     setSelectedCategory: PropTypes.func,
 };
 
-function Resturant({ image, name, minTime, maxTime, rating, tags }) {
+function Resturant({ id, image, name, minTime, maxTime, rating, tags }) {
+    const navigationRef = useNavigation();
     return (
         <Animated.View
             layout={Layout.springify()}
@@ -213,7 +215,14 @@ function Resturant({ image, name, minTime, maxTime, rating, tags }) {
             exiting={ZoomOut}
             style={styles.restaurantCard}
         >
-            <AnimatedPressable>
+            <AnimatedPressable
+                onPress={() =>
+                    navigationRef.navigate("order", {
+                        screen: "orderScreen",
+                        params: { id },
+                    })
+                }
+            >
                 <Shadow
                     distance={25}
                     startColor="#dddddd"
