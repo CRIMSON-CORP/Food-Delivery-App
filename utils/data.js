@@ -39,8 +39,8 @@ export default {
         },
         {
             id: 7,
-            slug: "dougnuts",
-            label: "Doughnuts",
+            slug: "donut",
+            label: "Donuts",
             icon: require("../assets/images/catgories/doughnut.png"),
         },
         {

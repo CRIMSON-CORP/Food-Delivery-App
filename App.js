@@ -13,6 +13,7 @@ import Saved from "./App/screens/Saved";
 import Profile from "./App/screens/Profile";
 
 const Stack = createNativeStackNavigator();
+
 const screenOptions = {
     headerShown: false,
 };
