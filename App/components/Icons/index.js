@@ -5,3 +5,6 @@ export { default as LeftArrow } from "./LeftArrow";
 export { default as List } from "./List";
 export { default as LocationMarker } from "./LocationMarker";
 export { default as MasterCard } from "./MasterCard";
+export { default as Plus } from "./Plus";
+export { default as Minus } from "./Minus";
+export { default as Fire } from "./Fire";
