@@ -1,5 +1,6 @@
 export default {
     location: "745 Lincoln PI",
+    creditCard: "5491",
     categories: [
         {
             id: 1,
