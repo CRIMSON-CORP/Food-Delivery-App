@@ -75,7 +75,7 @@ function BottomNavigationBackground() {
     const navigationRef = useNavigation();
 
     useEffect(() => {
-        navigationRef.addListener("state", () => {
+        navigationRef?.addListener("state", () => {
             translateX.value = withTiming(SHAPES_STOPS[navigationRef?.getCurrentRoute()?.name], {
                 duration: HORIZONTAL_TRANSLATE_DURATION,
                 easing: HORIZONTAL_TRANSLATE_EASING,
@@ -106,7 +106,7 @@ function BottomNavigationTabs() {
     const [currentRouteName, setCurrentRouteName] = useState("");
 
     useEffect(() => {
-        navigationRef.addListener("state", () =>
+        navigationRef?.addListener("state", () =>
             setCurrentRouteName(navigationRef?.getCurrentRoute()?.name)
         );
     }, []);
@@ -236,10 +236,11 @@ function IndicatorBall() {
     const translateYInner = useSharedValue(0);
 
     useEffect(() => {
-        navigationRef.addListener("state", () => {
-            setCurrentRouteName(navigationRef.getCurrentRoute().name);
+        navigationRef?.addListener("state", () => {
+            const _currentRoute = navigationRef?.getCurrentRoute()?.name;
+            setCurrentRouteName(_currentRoute);
 
-            translateX.value = withTiming(SHAPES_STOPS[navigationRef.getCurrentRoute().name], {
+            translateX.value = withTiming(SHAPES_STOPS[_currentRoute], {
                 duration: HORIZONTAL_TRANSLATE_DURATION,
                 easing: HORIZONTAL_TRANSLATE_EASING,
             });
@@ -261,13 +262,6 @@ function IndicatorBall() {
     const isSearch = currentRouteName === "search";
     const isSaved = currentRouteName === "saved";
     const isProfile = currentRouteName === "profile";
-
-    console.log({
-        isHome,
-        isSearch,
-        isSaved,
-        isProfile,
-    });
 
     return (
         <AnimatedView style={[styles.indicatorBallOuter, animatedOuterViewStyles]}>

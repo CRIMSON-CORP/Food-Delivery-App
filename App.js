@@ -20,6 +20,12 @@ const screenOptions = {
     headerShown: false,
 };
 
+const orderScreenOption = {
+    headerShown: false,
+    animation: "slide_from_bottom",
+    animationDuration: 600,
+};
+
 export default function App() {
     const [fontsLoaded] = useFonts({ ...fonts.poppins });
 
@@ -30,7 +36,7 @@ export default function App() {
                 <NavigationProvider>
                     <Stack.Navigator screenOptions={screenOptions}>
                         <Stack.Screen name="main" component={Main} />
-                        <Stack.Screen name="order" component={Order} />
+                        <Stack.Screen name="order" component={Order} options={orderScreenOption} />
                     </Stack.Navigator>
                 </NavigationProvider>
             </GestureHandlerRootView>
@@ -53,15 +59,17 @@ function Main() {
     );
 }
 
+const orderNestedScreenOptions = {
+    headerShown: false,
+};
+
 function Order() {
     return (
-        <OrderStack.Navigator screenOptions={screenOptions}>
+        <OrderStack.Navigator>
             <OrderStack.Screen
                 name="orderScreen"
                 component={OrderScreen}
-                options={{
-                    animation: "slide_from_bottom",
-                }}
+                options={orderNestedScreenOptions}
             />
         </OrderStack.Navigator>
     );
