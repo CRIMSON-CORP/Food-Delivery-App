@@ -11,6 +11,7 @@ import Search from "./App/screens/Search";
 import Saved from "./App/screens/Saved";
 import Profile from "./App/screens/Profile";
 import OrderScreen from "./App/screens/Order/OrderScreen";
+import CartProvider from "./context/cartContext";
 
 const Stack = createNativeStackNavigator();
 const MainStack = createNativeStackNavigator();
@@ -65,13 +66,15 @@ const orderNestedScreenOptions = {
 
 function Order() {
     return (
-        <OrderStack.Navigator>
-            <OrderStack.Screen
-                name="orderScreen"
-                component={OrderScreen}
-                options={orderNestedScreenOptions}
-            />
-        </OrderStack.Navigator>
+        <CartProvider>
+            <OrderStack.Navigator>
+                <OrderStack.Screen
+                    name="orderScreen"
+                    component={OrderScreen}
+                    options={orderNestedScreenOptions}
+                />
+            </OrderStack.Navigator>
+        </CartProvider>
     );
 }
 

@@ -1,7 +1,13 @@
-import { View, StyleSheet, Dimensions, Image, ScrollView } from "react-native";
+import { View, StyleSheet, Dimensions, Image, FlatList } from "react-native";
 import PropTypes from "prop-types";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Animated, { FadeInDown } from "react-native-reanimated";
+import Animated, {
+    FadeInDown,
+    interpolate,
+    interpolateColor,
+    useAnimatedStyle,
+    useSharedValue,
+} from "react-native-reanimated";
 import theme from "../../../utils/theme";
 import { AnimatedPressable, TopBar } from "../../components";
 import {
@@ -16,6 +22,8 @@ import {
 import { Text } from "../../components/ui";
 import data from "../../../utils/data";
 import { Shadow } from "react-native-shadow-2";
+import { useCallback, useMemo } from "react";
+import { useCart } from "../../../context/cartContext";
 
 const { width } = Dimensions.get("screen");
 const FOOD_IMAGE_DIMENSION = 240;
@@ -64,28 +72,82 @@ TopSection.propTypes = {
 };
 
 function FoodsSection() {
+    const scrollPosition = useSharedValue(0);
+
+    const onScroll = useCallback(
+        ({
+            nativeEvent: {
+                contentOffset: { x },
+            },
+        }) => {
+            scrollPosition.value = x;
+        },
+        []
+    );
+
     return (
         <View style={styles.foodsContainer}>
-            <ScrollView
+            <FlatList
                 horizontal
                 pagingEnabled
                 data={data.foods}
+                onScroll={onScroll}
+                scrollEventThrottle={1}
                 keyExtractor={({ id }) => id}
                 showsHorizontalScrollIndicator={false}
-            >
-                {data.foods.map((item, index) => (
-                    <FoodItem key={item.id} {...item} index={index} />
+                renderItem={({ item, index }) => (
+                    <FoodItem
+                        {...item}
+                        id={item.id}
+                        index={index}
+                        key={item.id}
+                        scrollPosition={scrollPosition}
+                    />
+                )}
+            />
+            <View style={styles.indicatorDotsWrapper}>
+                {data.foods.map((_, index) => (
+                    <IndicatorDot key={index} index={index} scrollPosition={scrollPosition} />
                 ))}
-            </ScrollView>
+            </View>
         </View>
     );
 }
 
-function FoodItem({ image, title, price, description, calories }) {
+function FoodItem({ id, index, image, title, price, description, calories, scrollPosition }) {
+    const { cart, addToCart, removeFromCart } = useCart();
+
+    const itemInCart = cart.find((item) => item.id === id);
+
+    const minusDisabledStyles = useMemo(
+        () => ({
+            opacity: itemInCart ? 1 : 0.2,
+        }),
+        [itemInCart]
+    );
+
+    console.log(itemInCart);
+
+    const interpolationInputRange = [(index - 1) * width, index * width, (index + 1) * width];
+    const animatedRotaionStyles = useAnimatedStyle(() => ({
+        transform: [
+            {
+                rotate: `${interpolate(
+                    scrollPosition.value,
+                    interpolationInputRange,
+                    [120, 0, -120],
+                    "clamp"
+                )}deg`,
+            },
+        ],
+    }));
+
     return (
         <View style={styles.foodItem}>
             <View style={styles.foodItemImageContainer}>
-                <Image source={image} style={styles.foodItemImage} resizeMode="cover" />
+                <Animated.View style={animatedRotaionStyles}>
+                    <Image source={image} style={styles.foodItemImage} resizeMode="cover" />
+                </Animated.View>
                 <View style={styles.counterPosition}>
                     <Shadow
                         distance={25}
@@ -94,15 +156,19 @@ function FoodItem({ image, title, price, description, calories }) {
                         offset={[0, 25]}
                     >
                         <View style={styles.counter}>
-                            <View style={styles.counterIcon}>
-                                <Minus size={14} />
+                            <AnimatedPressable onPress={() => removeFromCart(id)}>
+                                <View style={[styles.counterIcon, minusDisabledStyles]}>
+                                    <Minus size={14} />
+                                </View>
+                            </AnimatedPressable>
+                            <View style={styles.counterText}>
+                                <Text size={26}>{itemInCart ? itemInCart.amount : 0}</Text>
                             </View>
-                            <View>
-                                <Text>2</Text>
-                            </View>
-                            <View style={styles.counterIcon}>
-                                <Plus size={14} />
-                            </View>
+                            <AnimatedPressable onPress={() => addToCart(id)}>
+                                <View style={styles.counterIcon}>
+                                    <Plus size={14} />
+                                </View>
+                            </AnimatedPressable>
                         </View>
                     </Shadow>
                 </View>
@@ -126,23 +192,64 @@ function FoodItem({ image, title, price, description, calories }) {
 }
 
 FoodItem.propTypes = {
+    id: PropTypes.number,
     index: PropTypes.number,
     image: PropTypes.number,
     title: PropTypes.string,
     price: PropTypes.number,
     description: PropTypes.string,
     calories: PropTypes.number,
+    scrollPosition: PropTypes.object,
+};
+
+function IndicatorDot({ index, scrollPosition }) {
+    const interpolationInputRange = [(index - 1) * width, index * width, (index + 1) * width];
+    const backgroundColorInterpolationOutput = [
+        theme.colors[200],
+        theme.colors.primary,
+        theme.colors[200],
+    ];
+    const dotAnimatedStyles = useAnimatedStyle(() => ({
+        transform: [
+            {
+                scale: interpolate(
+                    scrollPosition.value,
+                    interpolationInputRange,
+                    [1, 1.5, 1],
+                    "clamp"
+                ),
+            },
+        ],
+        backgroundColor: interpolateColor(
+            scrollPosition.value,
+            interpolationInputRange,
+            backgroundColorInterpolationOutput,
+            "RGB"
+        ),
+    }));
+    return <Animated.View style={[styles.indicatorDot, dotAnimatedStyles]} />;
+}
+
+IndicatorDot.propTypes = {
+    index: PropTypes.number,
+    scrollPosition: PropTypes.object,
 };
 
 function BottomSection() {
+    const { cart } = useCart();
+
+    const totalCostOfItems = cart.reduce((initial, accum) => {
+        return initial + accum.price * accum.amount;
+    }, 0);
+
     return (
         <Animated.View entering={FadeInDown.delay(500).duration(500)} style={styles.actionTab}>
             <View style={styles.actionTabTop}>
                 <Text weight={500} size={18}>
-                    4 Items in Cart
+                    {`${cart.length} Items in Cart`}
                 </Text>
                 <Text weight={500} size={18}>
-                    $46.98
+                    {`$${totalCostOfItems.toFixed(2)}`}
                 </Text>
             </View>
             <View style={styles.separator} />
@@ -278,13 +385,13 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         width: 120,
         flexDirection: "row",
-        paddingVertical: 14,
+        paddingVertical: 4,
         paddingHorizontal: 16,
         borderRadius: 100,
         backgroundColor: "#FFFFFF",
     },
     counterIcon: {
-        marginTop: 5,
+        marginTop: 12,
     },
     textCenter: {
         textAlign: "center",
@@ -294,10 +401,14 @@ const styles = StyleSheet.create({
         width: "80%",
         alignSelf: "center",
     },
+    counterText: {
+        marginTop: 3,
+    },
     calories: {
         flexDirection: "row",
         alignItems: "center",
         alignSelf: "center",
+        marginBottom: 20,
     },
     fire: {
         marginTop: -4,
@@ -305,5 +416,17 @@ const styles = StyleSheet.create({
     },
     caloriesText: {
         opacity: 0.2,
+    },
+    indicatorDotsWrapper: {
+        flexDirection: "row",
+        alignItems: "center",
+        alignSelf: "center",
+    },
+    indicatorDot: {
+        width: 5,
+        height: 5,
+        borderRadius: 10,
+        marginRight: 6,
+        backgroundColor: theme.colors[200],
     },
 });
