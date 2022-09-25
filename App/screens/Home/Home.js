@@ -237,7 +237,9 @@ function Resturant({ id, image, name, minTime, maxTime, rating, tags }) {
                             resizeMode="cover"
                         />
                         <View style={styles.time}>
-                            <Text weight={500}>{`${minTime}-${maxTime}min`}</Text>
+                            <Text weight={500}>
+                                {minTime}-{maxTime}min
+                            </Text>
                         </View>
                     </View>
                 </Shadow>

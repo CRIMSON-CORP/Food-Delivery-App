@@ -173,17 +173,17 @@ function FoodItem({ id, index, image, title, price, description, calories, scrol
                 </View>
             </View>
             <View style={styles.contentContainer}>
-                <Text
-                    size={24}
-                    weight={600}
-                    styles={styles.textCenter}
-                >{`${title}-$${price}`}</Text>
+                <Text size={24} weight={600} styles={styles.textCenter}>
+                    {title} - ${price}
+                </Text>
                 <Text styles={styles.textCenter}>{description}</Text>
                 <View style={styles.calories}>
                     <View style={styles.fire}>
                         <Fire size={14} />
                     </View>
-                    <Text weight={500} styles={styles.caloriesText}>{`${calories} cal`}</Text>
+                    <Text weight={500} styles={styles.caloriesText}>
+                        {calories} cal
+                    </Text>
                 </View>
             </View>
         </View>
@@ -251,10 +251,10 @@ function BottomSection({ navigation, name, rating }) {
         <Animated.View entering={FadeInDown.delay(500).duration(500)} style={styles.actionTab}>
             <View style={styles.actionTabTop}>
                 <Text weight={500} size={18}>
-                    {`${cart.length} Items in Cart`}
+                    {cart.length} Items in Cart
                 </Text>
                 <Text weight={500} size={18}>
-                    {`$${totalCostOfItems.toFixed(2)}`}
+                    ${totalCostOfItems.toFixed(2)}
                 </Text>
             </View>
             <View style={styles.separator} />
