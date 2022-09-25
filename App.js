@@ -12,6 +12,7 @@ import Saved from "./App/screens/Saved";
 import Profile from "./App/screens/Profile";
 import OrderScreen from "./App/screens/Order/OrderScreen";
 import CartProvider from "./context/cartContext";
+import MapScreen from "./App/screens/MapScreen/MapScreen";
 
 const Stack = createNativeStackNavigator();
 const MainStack = createNativeStackNavigator();
@@ -71,6 +72,11 @@ function Order() {
                 <OrderStack.Screen
                     name="orderScreen"
                     component={OrderScreen}
+                    options={orderNestedScreenOptions}
+                />
+                <OrderStack.Screen
+                    name="mapScreen"
+                    component={MapScreen}
                     options={orderNestedScreenOptions}
                 />
             </OrderStack.Navigator>

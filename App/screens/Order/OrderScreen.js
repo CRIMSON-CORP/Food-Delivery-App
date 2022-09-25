@@ -28,13 +28,17 @@ import { useCart } from "../../../context/cartContext";
 const { width } = Dimensions.get("screen");
 const FOOD_IMAGE_DIMENSION = 240;
 function OrderScreen({ navigation, route }) {
+    const selectedRestaurantId = route.params.id;
+    const { name, rating } = data.restaurant.find(
+        (restaurant) => restaurant.id === selectedRestaurantId
+    );
     return (
         <View style={styles.container}>
             <SafeAreaView style={styles.SafeAreaView}>
-                <TopSection navigation={navigation} route={route} />
+                <TopSection navigation={navigation} name={name} />
                 <View style={styles.main}>
                     <FoodsSection />
-                    <BottomSection />
+                    <BottomSection navigation={navigation} name={name} rating={rating} />
                 </View>
             </SafeAreaView>
         </View>
@@ -48,10 +52,7 @@ OrderScreen.propTypes = {
     navigation: PropTypes.object,
 };
 
-function TopSection({ navigation, route }) {
-    const selectedRestaurantId = route.params.id;
-    const { name } = data.restaurant.find((restaurant) => restaurant.id === selectedRestaurantId);
-
+function TopSection({ navigation, name }) {
     return (
         <TopBar
             leftIcon={
@@ -67,7 +68,7 @@ function TopSection({ navigation, route }) {
 }
 
 TopSection.propTypes = {
-    route: PropTypes.object,
+    name: PropTypes.string,
     navigation: PropTypes.object,
 };
 
@@ -125,8 +126,6 @@ function FoodItem({ id, index, image, title, price, description, calories, scrol
         }),
         [itemInCart]
     );
-
-    console.log(itemInCart);
 
     const interpolationInputRange = [(index - 1) * width, index * width, (index + 1) * width];
     const animatedRotaionStyles = useAnimatedStyle(() => ({
@@ -235,12 +234,18 @@ IndicatorDot.propTypes = {
     scrollPosition: PropTypes.object,
 };
 
-function BottomSection() {
+function BottomSection({ navigation, name, rating }) {
     const { cart } = useCart();
 
-    const totalCostOfItems = cart.reduce((initial, accum) => {
-        return initial + accum.price * accum.amount;
-    }, 0);
+    const totalCostOfItems = useMemo(
+        () =>
+            cart.reduce((initial, accum) => {
+                return initial + accum.price * accum.amount;
+            }, 0),
+        [cart]
+    );
+
+    const goToMap = useCallback(() => navigation.navigate("mapScreen", { name, rating }), []);
 
     return (
         <Animated.View entering={FadeInDown.delay(500).duration(500)} style={styles.actionTab}>
@@ -273,7 +278,7 @@ function BottomSection() {
                         <Text>{data.creditCard}</Text>
                     </View>
                 </View>
-                <AnimatedPressable>
+                <AnimatedPressable onPress={goToMap}>
                     <View style={styles.pressable}>
                         <Text size={18} weight={500} styles={styles.pressableText}>
                             Order
@@ -284,6 +289,12 @@ function BottomSection() {
         </Animated.View>
     );
 }
+
+BottomSection.propTypes = {
+    navigation: PropTypes.object,
+    name: PropTypes.string,
+    rating: PropTypes.number,
+};
 
 const styles = StyleSheet.create({
     container: {
