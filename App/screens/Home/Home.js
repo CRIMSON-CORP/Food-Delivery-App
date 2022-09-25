@@ -2,7 +2,7 @@ import { View, StyleSheet, Image } from "react-native";
 import PropTypes from "prop-types";
 import { SafeAreaView } from "react-native-safe-area-context";
 import data from "../../../utils/data";
-import { AnimatedPressable, TopBar } from "../../components";
+import { AnimatedPressable, AnimatedText, TopBar } from "../../components";
 import { Location, Cart, Star } from "../../components/Icons";
 import { Text } from "../../components/ui";
 import { Shadow } from "react-native-shadow-2";
@@ -50,12 +50,24 @@ function Home() {
                 </TopBar>
                 <View style={styles.SafeAreaView}>
                     <View style={styles.mainHeader}>
-                        <Text styles={styles.mainHeaderText} size={32} weight={500}>
+                        <AnimatedText
+                            delay={2000}
+                            styles={styles.mainHeaderText}
+                            size={32}
+                            weight={500}
+                            duration={700}
+                        >
                             Main
-                        </Text>
-                        <Text size={32} weight={500} styles={styles.mainHeaderText}>
+                        </AnimatedText>
+                        <AnimatedText
+                            duration={700}
+                            delay={2300}
+                            size={32}
+                            weight={500}
+                            styles={styles.mainHeaderText}
+                        >
                             Categories
-                        </Text>
+                        </AnimatedText>
                     </View>
                     <View>
                         <ScrollView
