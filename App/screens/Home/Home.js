@@ -2,8 +2,8 @@ import { View, StyleSheet, Image } from "react-native";
 import PropTypes from "prop-types";
 import { SafeAreaView } from "react-native-safe-area-context";
 import data from "../../../utils/data";
-import { AnimatedPressable, AnimatedText, TopBar } from "../../components";
-import { Location, Cart, Star } from "../../components/Icons";
+import { AnimatedPressable, AnimatedText, Restaurant, TopBar } from "../../components";
+import { Location, Cart } from "../../components/Icons";
 import { Text } from "../../components/ui";
 import { Shadow } from "react-native-shadow-2";
 import theme from "../../../utils/theme";
@@ -17,12 +17,8 @@ import Animated, {
     withDelay,
     withSpring,
     withTiming,
-    Layout,
-    ZoomOut,
-    ZoomIn,
     FadeInDown,
 } from "react-native-reanimated";
-import { useNavigation } from "../../../context/navigationContext";
 
 const CATEGORY_ITEM_WIDTH = 60;
 const CATEGORY_ITEM_HEIGHT = 90;
@@ -100,7 +96,7 @@ function Home() {
                             }}
                         >
                             {restaurants.map((item) => (
-                                <Resturant key={item.id} {...item} />
+                                <Restaurant key={item.id} {...item} />
                             ))}
                             {restaurants.length === 0 && (
                                 <Animated.View
@@ -216,78 +212,6 @@ CategoryItem.propTypes = {
     index: PropTypes.number,
     selectedCategory: PropTypes.string,
     setSelectedCategory: PropTypes.func,
-};
-
-function Resturant({ id, image, name, minTime, maxTime, rating, tags }) {
-    const navigationRef = useNavigation();
-    return (
-        <Animated.View
-            layout={Layout.springify()}
-            entering={ZoomIn.duration(600)}
-            exiting={ZoomOut}
-            style={styles.restaurantCard}
-        >
-            <AnimatedPressable
-                onPress={() =>
-                    navigationRef.navigate("order", {
-                        screen: "orderScreen",
-                        params: { id },
-                    })
-                }
-            >
-                <Shadow
-                    distance={25}
-                    startColor="#dddddd"
-                    endColor="#FFFFFF00"
-                    offset={[0, 8]}
-                    style={styles.restaurantCardShadow}
-                >
-                    <View style={styles.restaurantCardImageWrapper}>
-                        <Image
-                            source={image}
-                            style={styles.restaurantCardImage}
-                            resizeMode="cover"
-                        />
-                        <View style={styles.time}>
-                            <Text weight={500}>
-                                {minTime}-{maxTime}min
-                            </Text>
-                        </View>
-                    </View>
-                </Shadow>
-            </AnimatedPressable>
-            <View style={styles.restaurantCardContent}>
-                <Text size={28}>{name}</Text>
-                <View style={styles.restaurantCardContentDetail}>
-                    <Star size={16} color={theme.colors.primary} />
-                    <Text styles={styles.restaurantRating}>{rating}</Text>
-                    {tags.map(({ label }, index) => (
-                        <View key={index} style={styles.tag}>
-                            <Text styles={styles.tagText}>{label}</Text>
-                            <View style={styles.tagSeparator} />
-                        </View>
-                    ))}
-                    <Text>$</Text>
-                    <Text styles={styles.dollarFaded}>$$</Text>
-                </View>
-            </View>
-        </Animated.View>
-    );
-}
-
-Resturant.propTypes = {
-    id: PropTypes.number,
-    image: PropTypes.number,
-    name: PropTypes.string,
-    minTime: PropTypes.number,
-    maxTime: PropTypes.number,
-    rating: PropTypes.number,
-    tags: PropTypes.arrayOf(
-        PropTypes.shape({
-            slug: PropTypes.string,
-            label: PropTypes.string,
-        })
-    ),
 };
 
 const styles = StyleSheet.create({
