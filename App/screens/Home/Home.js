@@ -70,15 +70,16 @@ function Home() {
                             showsHorizontalScrollIndicator={false}
                             snapToInterval={CATEGORY_ITEM_WIDTH + 20}
                         >
-                            {data.categories.map((item) => (
-                                <CategoryItemBackground key={item.id} />
+                            {data.categories.map((item, index) => (
+                                <CategoryItemBackground key={item.id} index={index} />
                             ))}
                             <Indicator selectedCategory={selectedCategory} />
                             <View style={styles.categoryContent}>
-                                {data.categories.map((item) => (
+                                {data.categories.map((item, index) => (
                                     <CategoryItemContent
-                                        key={item.id}
                                         {...item}
+                                        key={item.id}
+                                        index={index}
                                         selectedCategory={selectedCategory}
                                         setSelectedCategory={setSelectedCategory}
                                     />
@@ -119,17 +120,25 @@ function Home() {
 
 export default Home;
 
-function CategoryItemBackground() {
+function CategoryItemBackground({ index }) {
     return (
-        <View style={styles.categoryItemWrapper}>
+        <Animated.View
+            entering={FadeInRight.delay((index + 10) * 100)
+                .duration(600)
+                .springify()}
+            style={styles.categoryItemWrapper}
+        >
             <Shadow distance={15} startColor="#F0F0F0" endColor="#FFFFFF00" offset={[0, 8]}>
                 <View style={styles.categoryItem} />
             </Shadow>
-        </View>
+        </Animated.View>
     );
 }
 
-function CategoryItemContent({ icon, label, slug, selectedCategory, setSelectedCategory }) {
+CategoryItemBackground.propTypes = {
+    index: PropTypes.number,
+};
+function CategoryItemContent({ icon, index, label, slug, selectedCategory, setSelectedCategory }) {
     const animatedColor = useSharedValue(slug === selectedCategory ? 1 : 0);
 
     const animatedIconContainerBackgroundStyles = useAnimatedStyle(() => ({
@@ -149,25 +158,32 @@ function CategoryItemContent({ icon, label, slug, selectedCategory, setSelectedC
         } else animatedColor.value = withTiming(0);
     }, [selectedCategory]);
     return (
-        <AnimatedPressable onPress={() => setSelectedCategory(slug)}>
-            <View style={styles.categoryItemWrapper}>
-                <Animated.View style={[styles.categoryItem, styles.categoryItemcontent]}>
-                    <Animated.View
-                        style={[styles.iconWrapper, animatedIconContainerBackgroundStyles]}
-                    >
-                        <Image source={icon} style={styles.categoryIcon} />
+        <Animated.View
+            entering={FadeInRight.delay((index + 10) * 100)
+                .duration(600)
+                .springify()}
+        >
+            <AnimatedPressable onPress={() => setSelectedCategory(slug)}>
+                <View style={styles.categoryItemWrapper}>
+                    <Animated.View style={[styles.categoryItem, styles.categoryItemcontent]}>
+                        <Animated.View
+                            style={[styles.iconWrapper, animatedIconContainerBackgroundStyles]}
+                        >
+                            <Image source={icon} style={styles.categoryIcon} />
+                        </Animated.View>
+                        <Animated.Text style={[styles.categoryLabel, animatedTextStyles]}>
+                            {label}
+                        </Animated.Text>
                     </Animated.View>
-                    <Animated.Text style={[styles.categoryLabel, animatedTextStyles]}>
-                        {label}
-                    </Animated.Text>
-                </Animated.View>
-            </View>
-        </AnimatedPressable>
+                </View>
+            </AnimatedPressable>
+        </Animated.View>
     );
 }
 
 CategoryItemContent.propTypes = {
     icon: PropTypes.number,
+    index: PropTypes.number,
     label: PropTypes.string,
     slug: PropTypes.string,
     selectedCategory: PropTypes.string,
@@ -274,7 +290,6 @@ const styles = StyleSheet.create({
         position: "absolute",
         top: 7.7,
         left: 7.7,
-        zIndex: 20,
     },
     restaurantScrollView: {
         flex: 1,
