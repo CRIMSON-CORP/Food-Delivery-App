@@ -23,8 +23,6 @@ import Animated, {
 const CATEGORY_ITEM_WIDTH = 60;
 const CATEGORY_ITEM_HEIGHT = 90;
 
-const RESTAURANT_CARD_HEIGHT = 200;
-
 function Home() {
     const [selectedCategory, setSelectedCategory] = useState("hot-dogs");
     const [restaurants, setRestaurants] = useState(data.restaurant);
@@ -276,65 +274,5 @@ const styles = StyleSheet.create({
     },
     restaurantScrollView: {
         flex: 1,
-    },
-    restaurantCardWrapper: {},
-    restaurantCard: {
-        marginBottom: 20,
-        width: "100%",
-    },
-    restaurantCardShadow: {
-        width: "100%",
-    },
-    restaurantCardImageWrapper: {
-        width: "100%",
-        borderRadius: 30,
-        overflow: "hidden",
-        position: "relative",
-    },
-    restaurantCardImage: {
-        height: RESTAURANT_CARD_HEIGHT,
-        width: "100%",
-    },
-    time: {
-        backgroundColor: "#FFFFFF",
-        paddingHorizontal: 16,
-        paddingVertical: 12,
-        position: "absolute",
-        bottom: 0,
-        left: 0,
-        borderTopRightRadius: 30,
-    },
-    restaurantCardContent: {
-        marginTop: 16,
-    },
-    restaurantCardContentDetail: {
-        flexDirection: "row",
-        // alignItems: "center",
-    },
-    restaurantRating: {
-        marginLeft: 8,
-        marginRight: 10,
-    },
-    tag: {
-        marginRight: 5,
-        flexDirection: "row",
-        alignItems: "center",
-    },
-    tagText: {
-        marginRight: 5,
-    },
-    tagSeparator: {
-        width: 4,
-        height: 4,
-        borderRadius: 99,
-        backgroundColor: theme.colors[200],
-    },
-    dollarFaded: {
-        color: theme.colors[200],
-    },
-    emptyRestaurantView: {
-        justifyContent: "center",
-        flexDirection: "row",
-        marginTop: 100,
     },
 });
