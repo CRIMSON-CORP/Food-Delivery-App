@@ -14,7 +14,6 @@ import Animated, {
     interpolateColor,
     useAnimatedStyle,
     useSharedValue,
-    withDelay,
     withSpring,
     withTiming,
     FadeInDown,
@@ -71,16 +70,20 @@ function Home() {
                             showsHorizontalScrollIndicator={false}
                             snapToInterval={CATEGORY_ITEM_WIDTH + 20}
                         >
-                            {data.categories.map((item, index) => (
-                                <CategoryItem
-                                    key={item.id}
-                                    {...item}
-                                    index={index}
-                                    selectedCategory={selectedCategory}
-                                    setSelectedCategory={setSelectedCategory}
-                                />
+                            {data.categories.map((item) => (
+                                <CategoryItemBackground key={item.id} />
                             ))}
                             <Indicator selectedCategory={selectedCategory} />
+                            <View style={styles.categoryContent}>
+                                {data.categories.map((item) => (
+                                    <CategoryItemContent
+                                        key={item.id}
+                                        {...item}
+                                        selectedCategory={selectedCategory}
+                                        setSelectedCategory={setSelectedCategory}
+                                    />
+                                ))}
+                            </View>
                         </ScrollView>
                     </View>
                     <ScrollView
@@ -116,16 +119,19 @@ function Home() {
 
 export default Home;
 
-function CategoryItem({ slug, icon, label, index, selectedCategory, setSelectedCategory }) {
+function CategoryItemBackground() {
+    return (
+        <View style={styles.categoryItemWrapper}>
+            <Shadow distance={15} startColor="#F0F0F0" endColor="#FFFFFF00" offset={[0, 8]}>
+                <View style={styles.categoryItem} />
+            </Shadow>
+        </View>
+    );
+}
+
+function CategoryItemContent({ icon, label, slug, selectedCategory, setSelectedCategory }) {
     const animatedColor = useSharedValue(slug === selectedCategory ? 1 : 0);
 
-    const animatedContainerBackgroundStyles = useAnimatedStyle(() => ({
-        backgroundColor: interpolateColor(
-            animatedColor.value,
-            [0, 1],
-            ["#FFFFFF", theme.colors.primary]
-        ),
-    }));
     const animatedIconContainerBackgroundStyles = useAnimatedStyle(() => ({
         backgroundColor: interpolateColor(
             animatedColor.value,
@@ -139,38 +145,34 @@ function CategoryItem({ slug, icon, label, index, selectedCategory, setSelectedC
 
     useEffect(() => {
         if (slug === selectedCategory) {
-            animatedColor.value = withDelay(350, withTiming(1));
+            animatedColor.value = withTiming(1);
         } else animatedColor.value = withTiming(0);
     }, [selectedCategory]);
-
     return (
-        <Animated.View
-            entering={FadeInRight.delay((index + 10) * 100)
-                .duration(600)
-                .springify()}
-        >
-            <AnimatedPressable onPress={() => setSelectedCategory(slug)}>
-                <View style={styles.categoryItemWrapper}>
-                    <Shadow distance={15} startColor="#F0F0F0" endColor="#FFFFFF00" offset={[0, 8]}>
-                        <Animated.View
-                            style={[styles.categoryItem, animatedContainerBackgroundStyles]}
-                        >
-                            <Animated.View
-                                style={[styles.iconWrapper, animatedIconContainerBackgroundStyles]}
-                            >
-                                <Image source={icon} style={styles.categoryIcon} />
-                            </Animated.View>
-                            <Animated.Text style={[styles.categoryLabel, animatedTextStyles]}>
-                                {label}
-                            </Animated.Text>
-                        </Animated.View>
-                    </Shadow>
-                </View>
-            </AnimatedPressable>
-        </Animated.View>
+        <AnimatedPressable onPress={() => setSelectedCategory(slug)}>
+            <View style={styles.categoryItemWrapper}>
+                <Animated.View style={[styles.categoryItem, styles.categoryItemcontent]}>
+                    <Animated.View
+                        style={[styles.iconWrapper, animatedIconContainerBackgroundStyles]}
+                    >
+                        <Image source={icon} style={styles.categoryIcon} />
+                    </Animated.View>
+                    <Animated.Text style={[styles.categoryLabel, animatedTextStyles]}>
+                        {label}
+                    </Animated.Text>
+                </Animated.View>
+            </View>
+        </AnimatedPressable>
     );
 }
 
+CategoryItemContent.propTypes = {
+    icon: PropTypes.number,
+    label: PropTypes.string,
+    slug: PropTypes.string,
+    selectedCategory: PropTypes.string,
+    setSelectedCategory: PropTypes.func,
+};
 function Indicator({ selectedCategory }) {
     const selectedCategoryIndex = data.categories.findIndex(
         (item) => item.slug === selectedCategory
@@ -185,7 +187,7 @@ function Indicator({ selectedCategory }) {
         });
     }, [selectedCategory]);
 
-    const indicatorAnmatedStyles = useAnimatedStyle(() => ({
+    const indicatorAnimatedStyles = useAnimatedStyle(() => ({
         transform: [{ translateX: translateX.value }],
     }));
 
@@ -194,22 +196,13 @@ function Indicator({ selectedCategory }) {
             entering={FadeInRight.delay(10 * 100)
                 .duration(600)
                 .springify()}
-            style={[styles.indicator, indicatorAnmatedStyles]}
+            style={[styles.indicator, indicatorAnimatedStyles]}
         />
     );
 }
 
 Indicator.propTypes = {
     selectedCategory: PropTypes.string,
-};
-
-CategoryItem.propTypes = {
-    slug: PropTypes.string,
-    icon: PropTypes.number,
-    label: PropTypes.string,
-    index: PropTypes.number,
-    selectedCategory: PropTypes.string,
-    setSelectedCategory: PropTypes.func,
 };
 
 const styles = StyleSheet.create({
@@ -237,10 +230,21 @@ const styles = StyleSheet.create({
     categoryItem: {
         width: CATEGORY_ITEM_WIDTH,
         height: CATEGORY_ITEM_HEIGHT,
-        borderRadius: 9999,
+        borderRadius: 999,
         alignItems: "center",
         padding: 5,
         position: "relative",
+        backgroundColor: "white",
+    },
+    categoryContent: {
+        position: "absolute",
+        width: "100%",
+        flex: 1,
+        left: 0,
+        flexDirection: "row",
+    },
+    categoryItemcontent: {
+        backgroundColor: "transparent",
     },
     iconWrapper: {
         padding: 5,
@@ -251,6 +255,7 @@ const styles = StyleSheet.create({
         marginBottom: 5,
         justifyContent: "center",
         alignItems: "center",
+        backgroundColor: theme.colors[100],
     },
     categoryIcon: {
         width: 20,
@@ -263,8 +268,7 @@ const styles = StyleSheet.create({
     indicator: {
         width: CATEGORY_ITEM_WIDTH + 5,
         height: CATEGORY_ITEM_HEIGHT + 5,
-        borderWidth: 3,
-        borderColor: theme.colors.primary,
+        backgroundColor: theme.colors.primary,
         borderRadius: 9999,
         alignItems: "center",
         position: "absolute",
@@ -274,5 +278,10 @@ const styles = StyleSheet.create({
     },
     restaurantScrollView: {
         flex: 1,
+    },
+    emptyRestaurantView: {
+        justifyContent: "center",
+        flexDirection: "row",
+        marginTop: 30,
     },
 });

@@ -25,7 +25,7 @@ function Saved({ navigation }) {
                     <View>
                         <View style={styles.mainHeader}>
                             <AnimatedText
-                                delay={500}
+                                delay={200}
                                 styles={styles.mainHeaderText}
                                 size={32}
                                 weight={500}
@@ -34,7 +34,7 @@ function Saved({ navigation }) {
                                 Saved
                             </AnimatedText>
                             <AnimatedText
-                                duration={700}
+                                duration={500}
                                 delay={700}
                                 size={32}
                                 weight={500}
