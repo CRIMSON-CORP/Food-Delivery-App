@@ -2,17 +2,38 @@ import PropTypes from "prop-types";
 import { View, StyleSheet, Image } from "react-native";
 import { Shadow } from "react-native-shadow-2";
 import data from "../../../utils/data";
-import { PushPin, Star } from "../../components/Icons";
+import { Minus, Plus, PushPin, Star } from "../../components/Icons";
 import { Text } from "../../components/ui";
 import avatar from "../../../assets/images/avatar.jpg";
 import map from "../../../assets/images/map.png";
 import theme from "../../../utils/theme";
+import { AnimatedPressable } from "../../components";
+import { useEffect, useState } from "react";
+import Animated, {
+    Easing,
+    interpolate,
+    useAnimatedStyle,
+    useSharedValue,
+    withTiming,
+} from "react-native-reanimated";
 
 function MapScreen({ route }) {
+    const zoom = useSharedValue(1);
+    const [zoomLevel, setZoomLevel] = useState(1);
+
+    useEffect(() => {
+        zoom.value = withTiming(zoomLevel, { duration: 700, easing: Easing.out(Easing.circle) });
+    }, [zoomLevel]);
+
+    const animatedZoomStyles = useAnimatedStyle(() => ({
+        transform: [{ scale: interpolate(zoom.value, [1, 4], [1, 2], "clamp") }],
+    }));
+
     return (
         <View style={styles.container}>
-            <Image source={map} style={styles.mapImage} />
+            <Animated.Image source={map} style={[styles.mapImage, animatedZoomStyles]} />
             <TopBar />
+            <Controls setZoomLevel={setZoomLevel} />
             <BottomBar params={route.params} />
         </View>
     );
@@ -47,6 +68,35 @@ function TopBar() {
         </View>
     );
 }
+
+function Controls({ setZoomLevel }) {
+    return (
+        <View style={styles.controls}>
+            <AnimatedPressable
+                onPress={() => setZoomLevel((prev) => (prev >= 4 ? prev : prev + 1))}
+            >
+                <Shadow distance={8} offset={[0, 4]} startColor="#00000015" endColor="#00000000">
+                    <View style={styles.control}>
+                        <Plus size={16} />
+                    </View>
+                </Shadow>
+            </AnimatedPressable>
+            <AnimatedPressable
+                onPress={() => setZoomLevel((prev) => (prev <= 1 ? prev : prev - 1))}
+            >
+                <Shadow distance={8} offset={[0, 4]} startColor="#00000015" endColor="#00000000">
+                    <View style={styles.control}>
+                        <Minus size={16} />
+                    </View>
+                </Shadow>
+            </AnimatedPressable>
+        </View>
+    );
+}
+
+Controls.propTypes = {
+    setZoomLevel: PropTypes.func,
+};
 
 function BottomBar({ params }) {
     const { name, rating } = params;
@@ -193,5 +243,19 @@ const styles = StyleSheet.create({
         width: "100%",
         height: "100%",
         resizeMode: "cover",
+    },
+    controls: {
+        position: "absolute",
+        right: 20,
+        bottom: 200,
+    },
+    control: {
+        width: 50,
+        height: 50,
+        backgroundColor: "white",
+        marginBottom: 16,
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 50,
     },
 });
