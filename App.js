@@ -2,7 +2,6 @@ import { StatusBar } from "expo-status-bar";
 import { useFonts } from "expo-font";
 import { StyleSheet, View } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 import NavigationProvider from "./context/navigationContext";
 import { BottomNavigation, LoadingScreen } from "./App/components";
 import fonts from "./assets/fonts";
@@ -33,7 +32,7 @@ export default function App() {
 
     if (fontsLoaded)
         return (
-            <GestureHandlerRootView style={styles.flex}>
+            <>
                 <StatusBar style="dark" translucent />
                 <NavigationProvider>
                     <Stack.Navigator screenOptions={screenOptions}>
@@ -41,7 +40,7 @@ export default function App() {
                         <Stack.Screen name="order" component={Order} options={orderScreenOption} />
                     </Stack.Navigator>
                 </NavigationProvider>
-            </GestureHandlerRootView>
+            </>
         );
 
     return <LoadingScreen />;

@@ -1,4 +1,4 @@
-import { View, StyleSheet, Image } from "react-native";
+import { View, StyleSheet, Image, ScrollView } from "react-native";
 import PropTypes from "prop-types";
 import { SafeAreaView } from "react-native-safe-area-context";
 import data from "../../../utils/data";
@@ -8,7 +8,6 @@ import { Text } from "../../components/ui";
 import { Shadow } from "react-native-shadow-2";
 import theme from "../../../utils/theme";
 import { useEffect, useState } from "react";
-import { ScrollView } from "react-native-gesture-handler";
 import Animated, {
     FadeInRight,
     interpolateColor,
