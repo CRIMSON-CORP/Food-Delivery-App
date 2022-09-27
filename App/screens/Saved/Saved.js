@@ -34,8 +34,8 @@ function Saved({ navigation }) {
                                 Saved
                             </AnimatedText>
                             <AnimatedText
-                                duration={500}
-                                delay={700}
+                                duration={700}
+                                delay={300}
                                 size={32}
                                 weight={500}
                                 styles={styles.mainHeaderText}

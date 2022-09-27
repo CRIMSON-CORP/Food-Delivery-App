@@ -43,7 +43,7 @@ function Home() {
                 <View style={styles.SafeAreaView}>
                     <View style={styles.mainHeader}>
                         <AnimatedText
-                            delay={2000}
+                            delay={1500}
                             styles={styles.mainHeaderText}
                             size={32}
                             weight={500}
@@ -53,7 +53,7 @@ function Home() {
                         </AnimatedText>
                         <AnimatedText
                             duration={700}
-                            delay={2300}
+                            delay={1700}
                             size={32}
                             weight={500}
                             styles={styles.mainHeaderText}

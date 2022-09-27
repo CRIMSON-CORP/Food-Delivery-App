@@ -36,7 +36,7 @@ function Search({ navigation }) {
                     <View>
                         <View style={styles.mainHeader}>
                             <AnimatedText
-                                delay={500}
+                                delay={200}
                                 styles={styles.mainHeaderText}
                                 size={32}
                                 weight={500}
@@ -46,7 +46,7 @@ function Search({ navigation }) {
                             </AnimatedText>
                             <AnimatedText
                                 duration={700}
-                                delay={700}
+                                delay={300}
                                 size={32}
                                 weight={500}
                                 styles={styles.mainHeaderText}
